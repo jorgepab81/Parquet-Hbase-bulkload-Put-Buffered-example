@@ -96,7 +96,7 @@ public class HbaseBulkLoadMap extends Configured implements Tool {
   
   /**
    * Class for the mapper reading from a Parquet table and returning the KeyValue required for Hbase
-   * @author James Kingley extended by Jorge Pablo
+   * @author Jorge Pablo
    *
    */
   private static class ParquetMapper extends Mapper<LongWritable, Group, ImmutableBytesWritable,KeyValue> {
@@ -219,78 +219,4 @@ public class HbaseBulkLoadMap extends Configured implements Tool {
 		return listKv;
 	}
   }
-  
-  /**
-   * Class to read from text files and returning the Keyvalue needed for Hbase. To BE IMPLEMENTED
-   * @author Jorge Pablo
-   *
-   
-  private static class TextMapper extends Mapper<LongWritable, Group, ImmutableBytesWritable, KeyValue> {
-	    static final String DELIM = ",";
-	    ImmutableBytesWritable rowKey = new ImmutableBytesWritable();
-	    KeyValue kv;
-	    byte[] columnFamily;
-	    List<String> keys;
-	    List<String> columns;
-	    StringBuilder rksb = new StringBuilder();
-	    private static final Logger sLogger = Logger.getLogger(TextMapper.class);
-
-	    @Override
-	    protected void setup(Context context) throws IOException, InterruptedException {
-	      Configuration conf = context.getConfiguration();
-	      columnFamily = conf.get(COLUMN_FAMILY).getBytes();
-	      keys = Arrays.asList(conf.get(ROWKEY).split(","));
-	      columns = Arrays.asList(conf.get(COLUMN_QUALIFIERS).split(","));
-	    }
-
-	    @Override
-	    protected void map(LongWritable key, Group value, Context context) throws IOException, InterruptedException {
-	      String line = value.toString();
-	      List<String> values = Arrays.asList(line.split(DELIM));
-	      sLogger.info("####################################################bulkload --> line found "+line+ " fields size = "+values.size());
-	      rksb.setLength(0);
-	      int rowkeyParts = 0;
-	      boolean rowkeySet = false;
-	      String[] listCols=  {"TIPO_PERS ","COD_PERS ","IDEMPR ","IDCENT ","IDPROD ","IDCONTR ","TIPO_INTER ","ORD_INTERV ","IND_ENVIO ","FEALTCON  ","USU_ULTACT ","EMULTACT ","CEULTACT ","FEC_ULTACT ","TIMULTAC ","IND_NIVACC ","SOP_CORRES ","PORC_RESPO ","NEMOC_NUM ","OBLIG_FIRM ","SITUA_RELA ","NRODOMIC ","INDDEVOL ","FEBAJCON ","TFORMINT ","CODIDIO ","CODSPROD ","CODPROD ","IDCONTRN STRING"};
-	      
-	      /*values contain the values in the same order than listCols.
-	       * we'll go through the keys passed by parameter and add the value only
-	       * in the position on the list of values that matches the index on listCols
-	       * Set rowkey first, preserving order
-	       *
-	      
-	      for (String k : keys) {
-	    	  for(int i=0; i< values.size();i++){
-		          if (k.trim().equals(listCols[i].trim())) {
-		            rksb.append(values.get(i).trim() + DELIM);
-		            rowkeyParts++;
-		            break;
-		          }
-	    	  }
-	      }
-	      //cleaning the last ,
-	      if (rksb.lastIndexOf(DELIM) > -1) rksb.delete(rksb.lastIndexOf(DELIM), rksb.length());
-	      
-	      //confirming we haven't discarded any key
-	      if (rowkeyParts == keys.size()) {
-	        rowKey.set(rksb.toString().getBytes());
-	        rowkeySet = true;
-	      } else {
-	        context.getCounter("TextMapper", "SKIPPED_INVALID_KEY").increment(1);
-	      }
-
-	      // Write columns. Same process than rowKey
-	      if (rowkeySet) {
-	        for (String col : columns) {
-	        	for(int i=0; i< listCols.length;i++){
-		          if (col.trim().equals(listCols[i])) {
-		            kv = new KeyValue(rowKey.get(), columnFamily, listCols[i].getBytes(), values.get(i).getBytes());
-		            context.write(rowKey, kv);
-		            context.getCounter("TextMapper", "RECORDS").increment(1);
-		          }
-	        	}
-	        }
-	      }
-	    }
-  }*/
 }
