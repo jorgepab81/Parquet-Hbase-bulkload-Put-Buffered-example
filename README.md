@@ -10,7 +10,7 @@ In the mapper, the connection is configured in the SetUP to avoid n-executions s
 
 The mapper then obtains the KV to insert in the Hbase table and enqueue it in an object 'List' that will keep them till it reaches the threshold marked. Then it will load them at once into Hbase, so the multiple connections is avoided.
 
-Just to finish, the table is closed in the method clear().
+Just to finish, the table is closed in the method cleanup).
 
 Note also that even if the output is not generated, we still need to tell the MR job what output file we are using.
 
