@@ -18,4 +18,4 @@
  * @author Jorge Pablo
  *
  */
-package com.isbanuk.hadoop.hbase.mr;
+package com.jpablo.hadoop.hbase.mr;

@@ -1,4 +1,4 @@
-package com.isbanuk.hadoop.hbase.mr;
+package com.jpablo.hadoop.hbase.mr;
 
 
 import org.apache.hadoop.conf.Configuration;
