@@ -16,12 +16,13 @@ Note also that even if the output is not generated, we still need to tell the MR
 
 To launch the package:
 
-$ hadoop jar hbase-bulkload-audit-txns-1.0.0.jar com.isbanuk.hadoop.hbase.mr.TxnsBulkLoad \
-      -D hbase.bulkload.table=<table-name> \
-      -D hbase.bulkload.cf=<family-column> \
-      -D hbase.bulkload.rowkey=<Rowkey-Hbase> \
-      -D hbase.bulkload.cq=<list-qualifiers> \
-      <Hdfs-Input-File> \
-      <Hdfs-output-file> \
+$ hadoop jar hbase-bulkload-audit-txns-1.0.0.jar com.isbanuk.hadoop.hbase.mr.TxnsBulkLoadMap \
+      -D hbase.bulkload.table=#table-name# \
+      -D hbase.bulkload.cf=#family-column# \
+      -D hbase.bulkload.rowkey=#Rowkey-Hbase# \
+      -D hbase.bulkload.cq=#list-qualifiers# \
+      #Hdfs-Input-File# \
+      #Hdfs-output-file# \
 
 Thanks a lot to JRkingley for his support in the extension of this MR! (https://github.com/jrkinley)
+
