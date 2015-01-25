@@ -72,7 +72,7 @@ public class HbaseBulkLoadMap extends Configured implements Tool {
     Configuration conf = this.getConf();
     /**Setting up 180 secs (2,5 min timeout instead of 600 s)
     /* Careful with this as it will wait this time for the Hbase commit. 
-   	/* If the put batch takes longer than this for whatever reason, it will fail. **/
+   	/* If the put batch takes longer than this for whatever reason, it will fail and retry till maxAttempts **/
     conf.set("mapreduce.task.timeout", "1800000");  
     HBaseConfiguration.addHbaseResources(conf);
     
@@ -86,7 +86,7 @@ public class HbaseBulkLoadMap extends Configured implements Tool {
     job.setNumReduceTasks(0);
     
     TableMapReduceUtil.addDependencyJars(job);
-    //inserting the keys on the mapper. Setting up 0 reducers
+    //Setting up 0 reducers
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1])); //even not generating output, we do need this.
     System.out.println("######## Executing the job #####");
@@ -133,8 +133,7 @@ public class HbaseBulkLoadMap extends Configured implements Tool {
 
     @Override
     protected void map(LongWritable key, Group value, Context context) throws IOException, InterruptedException {
-    	//This mapper will return the values cleaned, only with the columns needed. The action will take part
-    	//on the reduce part
+    	//This mapper will get the keyvalues to insert, only with the columns needed, and will insert it on Hbase
        
 	    List<KeyValue>  ListkeyV = getKeyValue(key,value,context);
 	    numrecordsTried++;
@@ -147,7 +146,7 @@ public class HbaseBulkLoadMap extends Configured implements Tool {
 	    	context.write(rowKey,keyv);
 	    	context.getCounter("ParquetMapper", "RECORDS").increment(1);
 	    }
-	    // we load once we reach certain amount of puts on the list
+	    // we load it on Hbase once we reach certain amount of puts on the list
 	    if (puts.size()>NUM_BATCH)
     	  loadBulk();  									
     }
